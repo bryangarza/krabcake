@@ -1,7 +1,7 @@
 // FIXME we haven't implemented raw pointers (i.e. \bot Tag and SharedRW Item)
 // so the test output we currently have for this is bogus.
 
-use test_dependencies::{kc_borrow_mut, print_stack_of, print_tag_of};
+use test_dependencies::{kc_as_raw, kc_borrow_mut, print_stack_of, print_tag_of};
 
 // This is slightly modified from the presentation in the POPL 2020 paper; we
 // want to observe the stack state as we run.
@@ -15,9 +15,9 @@ fn main() {
         l = std::ptr::addr_of!(local);
         print_stack_of(b"l\0".as_ptr(), l);
 
-        // FIXME this needs to use a special macro to be e.g. `kc_as_raw!` or
-        // something similar.
-        let raw_pointer = kc_borrow_mut!(local) as *mut i32;
+        //let raw_pointer = kc_as_raw!(kc_borrow_mut!(local)); //as *mut i32;
+        let temp = kc_borrow_mut!(local);
+        let raw_pointer = kc_as_raw!(temp);
 
         print_stack_of(b"l\0".as_ptr(), l);
         let result = {
